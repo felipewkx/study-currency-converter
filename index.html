@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Conversor Global - Corporate Edition</title>
     <style>
-     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #2c3e50; color: #333; display: flex; justify-content: center; align-items: flex-start; padding: 20px; min-height: 100vh; margin: 0; }
+     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #dbda9f; color: #333; display: flex; justify-content: center; align-items: flex-start; padding: 20px; min-height: 100vh; margin: 0; }
         
-        /* Largura reduzida de 450px para 320px */
-        .app-container { background: white; padding: 20px; border-radius: 12px; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
         
-        h1 { font-size: 1.2rem; text-align: center; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+        .app-container { background: white; padding: 20px; border-radius: 12px; width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        
+        h1 { font-size: 1.8rem; text-align: center; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
         .field { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 1.5rem; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1.3rem; }
         .row { display: flex; gap: 8px; }
         button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; font-size: 0.9rem; }
         button:hover { background: #219150; }
         #resultado-box { margin-top: 15px; padding: 12px; background: #f1f2f6; border-radius: 8px; text-align: center; min-height: 40px; }
-        #resultado-valor { font-size: 1.5rem; font-weight: bold; color: #27ae60; word-break: break-all; }
-        .historico { margin-top: 15px; font-size: 0.8rem; border-top: 1px solid #eee; padding-top: 10px; }
+        #resultado-valor { font-size: 2.0rem; font-weight: bold; color: #27ae60; word-break: break-all; }
+        .historico { margin-top: 15px; font-size: 1.5rem; border-top: 1px solid #eee; padding-top: 10px; }
         ul { padding-left: 15px; color: #666; margin-top: 5px; }
     </style>
 </head>
@@ -67,7 +67,7 @@
 </div>
 
 <script>
-    // Simulação de banco de dados de taxas (Base: 1 USD)
+    
     const taxas = { BRL: 5.20, EUR: 0.92, USD: 1.00, BTC: 0.000015 };
     const btn = document.getElementById("btn-converter");
     const historico = [];
@@ -78,26 +78,26 @@
         const de = document.getElementById("moeda-origem").value;
         const para = document.getElementById("moeda-destino").value;
 
-        // Validação de entrada
+        
         if (isNaN(valor) || valor <= 0) {
             alert("Por favor, insira um valor válido e positivo.");
             return;
         }
 
-        // Lógica de conversão: Converte para USD, depois para a moeda destino
+        
         let valorEmDolar = valor / taxas[de];
         let resultadoFinal = valorEmDolar * taxas[para];
 
-        // Formatar para exibição
+        
         const resultadoFormatado = new Intl.NumberFormat('pt-BR', { 
             style: 'currency', 
             currency: para 
         }).format(resultadoFinal);
 
-        // Exibir na tela
+        
         document.getElementById("resultado-valor").innerText = resultadoFormatado;
 
-        // Adicionar ao histórico
+       
         const textoHistorico = `${valor.toFixed(2)} ${de} = ${resultadoFormatado}`;
         atualizarHistorico(textoHistorico);
     });
@@ -105,13 +105,13 @@
     function atualizarHistorico(novoTexto) {
         const lista = document.getElementById("lista-historico");
         
-        // Adiciona no início do array
+        
         historico.unshift(novoTexto);
 
-        // Limpa a lista visual
+        
         lista.innerHTML = "";
 
-        // Renderiza no máximo os últimos 3
+        
         for (let i = 0; i < Math.min(historico.length, 10); i++) {
             let li = document.createElement("li");
             li.innerText = historico[i];
