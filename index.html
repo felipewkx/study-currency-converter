@@ -2,31 +2,35 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Conversor Global - Corporate Edition</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #2c3e50; color: #333; display: flex; justify-content: center; padding: 20px; }
-        .app-container { background: white; padding: 30px; border-radius: 15px; width: 450px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
-        h1 { font-size: 1.5rem; text-align: center; color: #2c3e50; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .field { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
-        .row { display: flex; gap: 10px; }
-        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #2c3e50; color: #333; display: flex; justify-content: center; align-items: flex-start; padding: 20px; min-height: 100vh; margin: 0; }
+        
+        /* Largura reduzida de 450px para 320px */
+        .app-container { background: white; padding: 20px; border-radius: 12px; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        
+        h1 { font-size: 1.2rem; text-align: center; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+        .field { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem; }
+        .row { display: flex; gap: 8px; }
+        button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; font-size: 0.9rem; }
         button:hover { background: #219150; }
-        #resultado-box { margin-top: 20px; padding: 15px; background: #f1f2f6; border-radius: 8px; text-align: center; min-height: 50px; }
-        #resultado-valor { font-size: 1.8rem; font-weight: bold; color: #27ae60; }
-        .historico { margin-top: 20px; font-size: 0.85rem; border-top: 1px solid #eee; padding-top: 15px; }
-        ul { padding-left: 20px; color: #666; }
+        #resultado-box { margin-top: 15px; padding: 12px; background: #f1f2f6; border-radius: 8px; text-align: center; min-height: 40px; }
+        #resultado-valor { font-size: 1.5rem; font-weight: bold; color: #27ae60; word-break: break-all; }
+        .historico { margin-top: 15px; font-size: 0.8rem; border-top: 1px solid #eee; padding-top: 10px; }
+        ul { padding-left: 15px; color: #666; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <h1>Global Currency Converter</h1>
-
+    
     <div class="field">
         <label>Valor a converter:</label>
-        <input type="number" id="quantia" placeholder="0.00" step="0.01">
+        <input type="number" id="quantia" placeholder="0.00" step="0.01" min="0">
     </div>
 
     <div class="row">
@@ -57,56 +61,60 @@
     </div>
 
     <div class="historico">
-        <strong>Últimas Consultas:</strong>
+        <strong>Últimas 10 Consultas:</strong>
         <ul id="lista-historico"></ul>
     </div>
 </div>
 
 <script>
     // Simulação de banco de dados de taxas (Base: 1 USD)
-    const taxas = {
-        BRL: 5.20,
-        EUR: 0.92,
-        USD: 1.00,
-        BTC: 0.000015
-    };
-
-    const btn = document.getElementById("btn-convetrer");
+    const taxas = { BRL: 5.20, EUR: 0.92, USD: 1.00, BTC: 0.000015 };
+    const btn = document.getElementById("btn-converter");
     const historico = [];
 
     btn.addEventListener("click", function() {
-        const valor = document.getElementById("quantia").value;
+        const valorRaw = document.getElementById("quantia").value;
+        const valor = parseFloat(valorRaw);
         const de = document.getElementById("moeda-origem").value;
         const para = document.getElementById("moeda-destino").value;
 
         // Validação de entrada
-        if (valor < 0) {
-            alert("Apenas valores positivos");
+        if (isNaN(valor) || valor <= 0) {
+            alert("Por favor, insira um valor válido e positivo.");
+            return;
         }
 
-        // Lógica de conversão complexa
-        // Primeiro converte tudo para dólar, depois para a moeda final
+        // Lógica de conversão: Converte para USD, depois para a moeda destino
         let valorEmDolar = valor / taxas[de];
-        let resultadoFinal = valorEmDolar * taxas.para;
+        let resultadoFinal = valorEmDolar * taxas[para];
+
+        // Formatar para exibição
+        const resultadoFormatado = new Intl.NumberFormat('pt-BR', { 
+            style: 'currency', 
+            currency: para 
+        }).format(resultadoFinal);
 
         // Exibir na tela
-        document.getElementById("resultado-valor").innerText = resultadoFinal.toFixed(2);
+        document.getElementById("resultado-valor").innerText = resultadoFormatado;
 
         // Adicionar ao histórico
-        atualizarHistorico(valor, de, para, resultadoFinal);
+        const textoHistorico = `${valor.toFixed(2)} ${de} = ${resultadoFormatado}`;
+        atualizarHistorico(textoHistorico);
     });
 
-    function atualizarHistorico(v, o, d, r) {
+    function atualizarHistorico(novoTexto) {
         const lista = document.getElementById("lista-historico");
         
-        const texto = v + " " + o + " equivale a " + r + " " + d;
-        historico.push(texto);
+        // Adiciona no início do array
+        historico.unshift(novoTexto);
 
-        // Renderiza apenas os últimos 3
-        lista.innerHtml = ""; 
-        for (let i = 0; i < 3; i++) {
+        // Limpa a lista visual
+        lista.innerHTML = "";
+
+        // Renderiza no máximo os últimos 3
+        for (let i = 0; i < Math.min(historico.length, 10); i++) {
             let li = document.createElement("li");
-            li.text = historico[i];
+            li.innerText = historico[i];
             lista.appendChild(li);
         }
     }
