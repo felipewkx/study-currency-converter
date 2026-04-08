@@ -2,17 +2,16 @@
 💱 Currency Converter
 -
 
-- Um conversor de moedas prático e eficiente desenvolvido como projeto prático para a disciplina de Desenvolvimento de Sistemas.
-O foco do projeto é lógica de programação.
+A practical and efficient currency converter developed as a practical project for the Systems Development course. The project focuses on programming logic.
 
 
-🚀 Funcionalidades
+🚀 Features
 -
 
--Conversão em Tempo Real
+- Real-Time Conversion
 
--Seleção de Moedas
+- Currency Selection
 
--Interface Intuitiva
+- Intuitive Interface
 
--Histórico de Consultas
+- Conversion History
